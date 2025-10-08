@@ -1,0 +1,105 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{todonotesextra}[Additional features for todonotes]
+
+
+%%% ===   BEGIN DEPENDENCIES   === %%%
+
+% Pass all options to todonotes package
+\DeclareOption*{%
+  \PassOptionsToPackage{\CurrentOption}{todonotes}%
+}
+\ProcessOptions\relax
+
+\setlength{\marginparwidth}{20mm} % Suppress warning about margins produced by todonotes.
+\RequirePackage[colorinlistoftodos]{todonotes}
+\RequirePackage{etoolbox, xkeyval, iftex}
+\ifluatex
+    \RequirePackage{luacolor, lua-ul}
+\else
+    \RequirePackage{soul}
+\fi
+%%% ===   END DEPENDENCIES   === %%%
+
+
+
+
+\newlength{\@todoextra@inlineWidth}%
+\newcommand{\todoinline}[2][]{%
+    \begingroup%
+        \settowidth{\@todoextra@inlineWidth}{#2\hspace{1.6 ex + 1 pt}}%
+        % Magic number from: https://github.com/henrikmidtiby/todonotes/blob/4605e00eedd635eded01c1592a67d538b334ed26/todonotes.dtx#L1923
+        \todo[size=\normalsize, inlinewidth=\@todoextra@inlineWidth, inline, noinlinepar, #1]{#2}\relax%
+    \endgroup%
+}
+
+
+
+
+\NewCommandCopy\todoextra@orig@todonotes@addElementToListOfTodos\@todonotes@addElementToListOfTodos
+
+
+\newtoggle{@todoextra@hasnotes}
+
+\renewcommand{\@todonotes@addElementToListOfTodos}{%
+    \immediate\write\@auxout{\noexpand\global\noexpand\toggletrue{@todoextra@hasnotes}}%
+    \todoextra@orig@todonotes@addElementToListOfTodos%
+    \global\let\@todonotes@addElementToListOfTodos\todoextra@orig@todonotes@addElementToListOfTodos%
+}
+
+\newcommand{\if@todoextra@showlistoftodo}[2]{%
+    \ifboolexpr{togl {@todoextra@hasnotes} or not bool {@todoextra@listoftodos@autohide}}{#1}{#2}%
+}
+
+% https://tex.stackexchange.com/a/88007
+% https://tex.stackexchange.com/a/47372
+% https://tex.stackexchange.com/a/643233
+\NewCommandCopy\todoextra@orig@listoftodos\listoftodos
+
+
+% \define@key[@todoextra]{todolist}{title}[\@todonotes@todolistname]{\newcommand{\@todoextra@todolist@title}{#1}}
+\define@cmdkey[@todoextra]{listoftodos}{title}[\@todonotes@todolistname]{}
+\define@boolkey[@todoextra]{listoftodos}{autohide}[true]{}
+
+\presetkeys[@todoextra]{listoftodos}{title, autohide}{}
+
+
+\renewcommand{\listoftodos}[1][]{%
+    \setkeys[@todoextra]{listoftodos}{#1}%
+    \if@todoextra@showlistoftodo{\todoextra@orig@listoftodos[\cmd@todoextra@listoftodos@title]}{\PackageInfo{todonotesextra}{No todos found}}%
+}
+
+
+
+
+\ifluatex\else
+    %%% === SOUL PATCHING === %%%
+    % https://tex.stackexchange.com/a/297736
+    \def\SOUL@hlpreamble{%
+        \setul{}{2.8ex}% increased by 1ex
+        \let\SOUL@stcolor\SOUL@hlcolor
+        \dimen@\SOUL@ulthickness
+        \dimen@i=-.75ex % increased by -0.25ex
+        \advance\dimen@i-.5\dimen@
+        \edef\SOUL@uldepth{\the\dimen@i}%
+        \let\SOUL@ulcolor\SOUL@stcolor
+        \SOUL@ulpreamble
+    }
+    % https://tex.stackexchange.com/a/139500
+    \soulregister{\cite}{7}
+    \soulregister{\ref}{7}
+    \soulregister{\autoref}{7}
+    \soulregister{\nameref}{7}
+    %%% === SOUL PATCHING === %%%
+    
+    \newcommand{\highLight}[2][yellow]{%
+        \sethlcolor{#1}%
+        \hl{#2}%
+    }
+\fi
+
+
+\newcommand{\todohl}[3][]{%
+    % Set keys on upstream todonotes package. Has side effect of setting \@todonotes@currentbackgroundcolor to desired value.
+    % \setkeys{todonotes}{#1}% Only needed if colors are required before call to todo. 
+    \hspace{0pt}\todo[#1]{#2}{\color{\@todonotes@currenttextcolor}\highLight[\@todonotes@currentbackgroundcolor]{#3}}%
+}

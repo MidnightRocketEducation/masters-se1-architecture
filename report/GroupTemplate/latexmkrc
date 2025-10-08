@@ -1,0 +1,7 @@
+# https://mirrors.dotsrc.org/ctan/support/latexmk/latexmk.pdf
+# https://www.overleaf.com/learn/latex/Articles/How_to_use_latexmkrc_with_Overleaf
+
+
+# https://tex.stackexchange.com/a/31950
+# https://www.overleaf.com/learn/latex/Articles/An_introduction_to_Kpathsea_and_how_TeX_engines_search_for_files#TEXINPUTS_and_using_nested_folders_for_graphics_files
+$ENV{'TEXINPUTS'}='./tex//:'.$ENV{'TEXINPUTS'};

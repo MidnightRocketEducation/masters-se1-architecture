@@ -1,0 +1,19 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{projectmacros}[Project specific macros]
+% A place to store project specific macros
+
+%%% ===   BEGIN DEPENDENCIES   === %%%
+\RequirePackage{xspace} % https://stackoverflow.com/a/9943322
+\xspaceaddexceptions{\cite}
+%%% ===   END DEPENDENCIES   === %%%
+
+
+% Custom mintinline shortcuts.
+\newcommand{\go}[1]{\mintinline{go}{#1}}
+\newcommand{\java}[1]{\mintinline{java}{#1}}
+
+
+
+\newcommand{\xcert}{\texttt{X.509}\xspace}
+
+\newcommand{\rfc}[1]{\texttt{RFC #1}\cite{rfc#1}}
