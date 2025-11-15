@@ -1,4 +1,4 @@
-name: Build & Push prod-line-sys-svc Docker Image
+name: CI/CD Workflow - prod-line-sys-svc
 
 # Workflow triggers
 on:
