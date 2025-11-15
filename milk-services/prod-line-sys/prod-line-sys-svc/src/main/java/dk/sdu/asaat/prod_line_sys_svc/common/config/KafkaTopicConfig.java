@@ -19,6 +19,12 @@ public class KafkaTopicConfig {
     @Value("${kafka.topic.smart-buffer-tanks}")
     private String smartBufferTanksTopic;
 
+    @Value("${kafka.replication-factor}")
+    private short replicationFactor;
+
+    @Value("${kafka.partitions}")
+    private int partitions;
+
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
@@ -28,6 +34,6 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic smartBufferTanks() {
-        return new NewTopic(smartBufferTanksTopic, 3, (short) 2);
+        return new NewTopic(smartBufferTanksTopic, partitions, replicationFactor);
     }
 }
