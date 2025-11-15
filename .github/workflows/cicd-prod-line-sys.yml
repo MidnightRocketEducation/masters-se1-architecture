@@ -1,5 +1,6 @@
 name: Build & Push prod-line-sys-svc Docker Image
 
+# Workflow triggers
 on:
     push:
         branches:
@@ -16,8 +17,9 @@ on:
         paths:
             - "milk-services/prod-line-sys/prod-line-sys-svc/**"
 
+# Environment Variables
 env:
-    IMAGE_NAME: prod-line-sys-svc
+    IMAGE_NAME: prod-line-sys-svc # lower case
 
 jobs:
     build-and-push:
@@ -35,16 +37,22 @@ jobs:
             - name: Log in to GitHub Container Registry
               uses: docker/login-action@v3
               with:
+                  # Authenticate with GitHub Container Registry, could be changed to use DockerHub
                   registry: ghcr.io
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Build and push Docker image
+            # Transform github repo owner to lowercase
+            - name: Transform repo owner to lowercase
+              run: echo "OWNER_LOWER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+            # Building and pushing application image go to: GitHub -> Profile -> Packages
+            - name: Build & Push Docker image
               uses: docker/build-push-action@v5
               with:
                   context: milk-services/prod-line-sys/prod-line-sys-svc
                   file: milk-services/prod-line-sys/prod-line-sys-svc/Dockerfile
                   push: true
                   tags: |
-                      ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
-                      ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+                      ghcr.io/${{ env.OWNER_LOWER }}/${{ env.IMAGE_NAME }}:latest
+                      ghcr.io/${{ env.OWNER_LOWER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
