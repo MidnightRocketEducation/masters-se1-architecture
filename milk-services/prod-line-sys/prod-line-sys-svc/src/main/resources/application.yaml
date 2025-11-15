@@ -1,0 +1,7 @@
+spring.application:
+  name: prod-line-sys-svc
+kafka:
+  bootstrap-servers: localhost:9092
+  topic:
+    smart-buffer-tanks: smart-buffer-tanks
+    vision-control: vision-control
