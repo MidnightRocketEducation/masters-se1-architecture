@@ -31,7 +31,7 @@
     <properties>
         <java.version>25</java.version>
 
-        <spring-boot-web.version>3.5.7</spring-boot-web.version>
+        <spring-boot-web.version>4.0.0-RC2</spring-boot-web.version>
         <spring-kafka.version>4.0.0-RC1</spring-kafka.version>
 
         <spring-boot-starter-actuator.version>4.0.0-RC2</spring-boot-starter-actuator.version>
