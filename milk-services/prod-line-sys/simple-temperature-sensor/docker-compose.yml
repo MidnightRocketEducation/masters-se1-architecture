@@ -1,0 +1,22 @@
+# Example docker-compose file
+# Provided for build specification and
+# to demo simple setup with http echo server.
+
+services:
+  simpletemp:
+    image: "ghcr.io/midnightrocketeducation/masters-se1-architecture/milk-services/prod-line-sys/simple-temperature-sensor:latest"
+    depends_on:
+      echo:
+        condition: service_started
+    build:
+      context: .
+      args:
+        APP_NAME: temp-sensor
+      labels:
+        org.opencontainers.image.source: "https://github.com/MidnightRocketEducation/masters-se1-architecture"
+    environment:
+      ST_PUSH_URL: http://echo
+      ST_INTERVAL: 10
+
+  echo:
+    image: "docker.io/ealen/echo-server"
