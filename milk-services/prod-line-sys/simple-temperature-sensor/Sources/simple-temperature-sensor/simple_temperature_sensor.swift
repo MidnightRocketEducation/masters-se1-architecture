@@ -37,30 +37,23 @@ struct simple_temperature_sensor: AsyncParsableCommand {
 	) var url: URL?;
 
 	mutating func run() async throws {
-		let task = Task {
-			while true {
-				let t = TemperatureReading(temperature: 22.1);
-				print("Temperature: \(t.asJSON())");
-				try await Task.sleep(for: .seconds(60));
-			}
+		guard let url else {
+			throw ValidationError("Either set the --push-url option or the \(ENV.PUSH_URL.name) environment variable.");
 		}
 
-		while true {
-			let input = readLine(strippingNewline: true) ?? "";
-			if input == "exit" {
-				print("Exiting...");
-				task.cancel();
-				throw ExitCode(0);
-			}
-		}
+		stderr("Starting...");
+		stderr("Configured url: \(self.url?.absoluteString ?? "n/a")")
+
+		let daemon = TempDaemon(temperature: self.temperature, interval: .seconds(self.interval), url: url);
+
+		await daemon.loop();
 	}
 
 
 	mutating func validate() throws {
-		guard let url = try self.url ?? ENV.PUSH_URL.value.map(parseURL) else {
-			throw ValidationError("Either set the --push-url option or the \(ENV.PUSH_URL.name) environment variable.");
+		if self.url == nil {
+			self.url = try ENV.PUSH_URL.value.map(parseURL);
 		}
-		self.url = url;
 	}
 }
 

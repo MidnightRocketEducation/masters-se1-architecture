@@ -17,18 +17,14 @@ struct TemperatureReading: Codable {
 		self.temperature = temperature
 	}
 
-	init (temperature: Double) {
+	init (_ temperature: Double) {
 		self.timestamp = Date();
 		self.temperature = temperature;
 	}
 
-	func asJSON() -> String {
+	func asJSONData() -> Data {
 		let encoder = JSONEncoder();
 		encoder.dateEncodingStrategy = .iso8601;
-		if let data = try? encoder.encode(self),
-		   let jsonString = String(data: data, encoding: .utf8) {
-			return jsonString;
-		}
-		return "{}";
+		return (try? encoder.encode(self)) ?? Data("{}".utf8);
 	}
 }

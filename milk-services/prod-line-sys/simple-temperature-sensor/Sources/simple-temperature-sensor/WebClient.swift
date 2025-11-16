@@ -16,23 +16,26 @@ import FoundationNetworking;
 struct WebClient {
 	static private let session = URLSession.shared;
 
-	static func run<T: Sendable>(url: URL, method: Method, body: Data? = nil, token: String) async -> T?  where T: Codable {
+	static func run(url: URL, method: Method, body: Data? = nil, accept: AcceptType = .json, token: String? = nil) async -> Data? {
 		var request = URLRequest(url: url);
 		request.httpMethod = method.rawValue;
-		request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization");
-		request.setValue("application/json", forHTTPHeaderField: "accept");
+		if let token = token {
+			request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization");
+		}
+		request.setValue(accept.rawValue, forHTTPHeaderField: "accept");
 		request.httpBody = body;
 		do {
 			let (data, _) = try await Self.session.data(for: request)
-			let decoder = JSONDecoder();
-			let simpleDateFormatter = DateFormatter();
-			simpleDateFormatter.dateFormat = "yyyy-MM-dd";
-			decoder.dateDecodingStrategy = .formatted(simpleDateFormatter);
-			return try decoder.decode(T.self, from: data);
+			return data;
 		} catch(let e) {
-			print(e);
+			stderr(e);
 			return nil;
 		}
+	}
+
+	@discardableResult
+	static func post(url: URL, body: Data? = nil, accept: AcceptType = .json, token: String? = nil) async -> Data? {
+		return await Self.run(url: url, method: .post, body: body, accept: accept, token: token);
 	}
 }
 
@@ -43,5 +46,9 @@ extension WebClient {
 		case post = "POST";
 		case put = "PUT";
 		case delete = "DELETE";
+	}
+
+	enum AcceptType: String {
+		case json = "application/json";
 	}
 }
