@@ -3,6 +3,8 @@ name: Build simple temperature sensor
 # Trigger the workflow on pushes to the main branch (adjust as needed)
 on:
   push:
+    branches:
+      - main
 
 env:
   SUBPROJECT_PATH: milk-services/prod-line-sys/simple-temperature-sensor
@@ -53,6 +55,7 @@ jobs:
         env:
           TAGS:
             ghcr.io/${{ github.repository }}/${{ env.IMAGE_BASE_NAME }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/${{ env.IMAGE_BASE_NAME }}:latest
         run: |
           printenv TAGS | awk '{print "TAGS=" tolower($0)}' | tee -a "$GITHUB_OUTPUT"
 
