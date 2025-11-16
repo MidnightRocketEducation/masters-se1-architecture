@@ -5,6 +5,11 @@ on:
   push:
     paths:
       - milk-services/prod-line-sys/simple-temperature-sensor
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 env:
   SUBPROJECT_PATH: milk-services/prod-line-sys/simple-temperature-sensor
