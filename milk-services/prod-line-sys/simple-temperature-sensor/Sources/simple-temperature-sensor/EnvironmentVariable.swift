@@ -12,7 +12,8 @@ enum ENV {
 	static let prefix = "ST_"; // ST for Simple Temp
 
 	case PUSH_URL,
-		 INTERVAL;
+		 INTERVAL,
+		TEMPERATURE;
 
 	var value: String? {
 		ProcessInfo.processInfo.environment[self.name];

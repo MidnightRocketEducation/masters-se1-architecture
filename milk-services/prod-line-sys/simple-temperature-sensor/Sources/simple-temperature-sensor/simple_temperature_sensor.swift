@@ -14,13 +14,18 @@ struct simple_temperature_sensor: AsyncParsableCommand {
 		abstract: "Simple temeprature sensor deamon",
 	);
 
-
 	@Option(
 		help: .init(
 			"Update interval in seconds. Defaults to the value of env \(ENV.INTERVAL.name) if set, otherwise 60 seconds.",
 			valueName: "seconds"
 		)
 	) var interval: Int = ProcessInfo.processInfo.environment[ENV.INTERVAL.name].flatMap(Int.init) ?? 60;
+
+	@Option(
+		help: .init(
+			"Temperature in degrees Celsius. Defaults to the value of env \(ENV.TEMPERATURE.name) if set, otherwise 4.1 °C."
+		)
+	) var temperature: Double = ProcessInfo.processInfo.environment[ENV.INTERVAL.name].flatMap(Double.init) ?? 4.1;
 
 	@Option(
 		name: [.customLong("push-url"), .long],
