@@ -1,5 +1,4 @@
 ### Interactive Kafka pod
-
 ```zsh
 kubectl run kafka-client -it --rm --restart='Never' --image docker.io/bitnami/kafka:3.8.0-debian-12-r3  -- bash
 ```

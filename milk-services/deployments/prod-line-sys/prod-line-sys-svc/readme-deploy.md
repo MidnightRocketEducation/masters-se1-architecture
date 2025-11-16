@@ -1,12 +1,12 @@
 ### Deploying
 #### Prod Line System Service - Deployment
 ```zsh
-kubectl apply -f deployments/prod-line-sys/prod-line-sys-svc/deployment-prod-line-sys-svc.yaml
+kubectl apply -f milk-services/deployments/prod-line-sys/prod-line-sys-svc/deployment-prod-line-sys-svc.yaml
 ```
 
 #### Prod Line System Service - Service
 ```zsh
-kubectl apply -f deployments/prod-line-sys/prod-line-sys-svc/svc-prod-line-sys-svc.yaml
+kubectl apply -f milk-services/deployments/prod-line-sys/prod-line-sys-svc/svc-prod-line-sys-svc.yaml
 ```
 
 ### Other useful commands
