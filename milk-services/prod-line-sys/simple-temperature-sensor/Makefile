@@ -22,6 +22,13 @@ endif
 # ------------------------------------------------------------------
 #  Default target – just build the project
 # ------------------------------------------------------------------
-.PHONY: build
+.PHONY: build getpath
 build:
 	$(SWIFT_BUILD_CMD)
+
+
+getpath:
+	@test -n "$(APP_NAME)" || { echo "Please provide the APP_NAME variable with the name of the executable to get the path for."; exit 1; }
+	$(eval BIN_PATH="$(shell $(SWIFT_BUILD_CMD) --show-bin-path)/$(APP_NAME)")
+	@test -e "$(BIN_PATH)" || { printf "Not an executable: %s\n" "$(shell realpath --relative-to . "$(BIN_PATH)")"; exit 1; }
+	@printf "%s\n" $(BIN_PATH)
