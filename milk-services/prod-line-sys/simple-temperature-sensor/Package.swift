@@ -4,18 +4,21 @@
 import PackageDescription
 
 let package = Package(
-    name: "simple-temperature-sensor",
-    dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
-    ],
-    targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .executableTarget(
-            name: "simple-temperature-sensor",
-            dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
-            ]
-        ),
-    ]
+	name: "simple-temperature-sensor",
+	platforms: [
+		.macOS(.v15),
+	],
+	dependencies: [
+		.package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
+	],
+	targets: [
+		// Targets are the basic building blocks of a package, defining a module or a test suite.
+		// Targets can depend on other targets in this package and products from dependencies.
+		.executableTarget(
+			name: "temp-sensor",
+			dependencies: [
+				.product(name: "ArgumentParser", package: "swift-argument-parser"),
+			]
+		),
+	]
 )
