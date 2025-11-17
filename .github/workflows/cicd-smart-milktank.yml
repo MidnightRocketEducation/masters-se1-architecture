@@ -1,10 +1,10 @@
-name: Build simple temperature sensor
+name: CI/CD for Smart milktanks
 
 # Trigger the workflow on pushes to the main branch (adjust as needed)
 on:
   push:
     paths:
-      - milk-services/prod-line-sys/simple-temperature-sensor
+      - milk-services/prod-line-sys/smart-buffer-tanks/temperature-sensor
     branches:
       - main
   pull_request:
@@ -12,16 +12,16 @@ on:
       - main
 
 env:
-  SUBPROJECT_PATH: milk-services/prod-line-sys/simple-temperature-sensor
-  CACHE_PATH: milk-services/prod-line-sys/simple-temperature-sensor/cache
+  SUBPROJECT_PATH: milk-services/prod-line-sys/smart-buffer-tanks/temperature-sensor
+  CACHE_PATH: milk-services/prod-line-sys/smart-buffer-tanks/temperature-sensor/cache
   APP_NAME: temp-sensor
 
   # The base name of the docker image. e.g. ghcr.io/<REPO_NAME>/<IMAGE_BASE_NAME>:<VERSION_TAG>
-  IMAGE_BASE_NAME: milk-services/prod-line-sys/simple-temperature-sensor
+  IMAGE_BASE_NAME: milk-services/prod-line-sys/smart-buffer-tanks/temperature-sensor
 
 # The workflow uses the newest Ubuntu runner
 jobs:
-  build-and-push:
+  build-and-push-temp-sensor:
     runs-on: ubuntu-latest
 
     # Required permissions: push to packages

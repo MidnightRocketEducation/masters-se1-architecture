@@ -1,7 +1,7 @@
 //
 //
 //  TempDaemon.swift
-//  simple-temperature-sensor
+//  smart-buffer-tanks/temperature-sensor
 //
 //  Created by MidnightRocket on 16/11/2025.
 //  

@@ -4,7 +4,7 @@
 
 services:
   simpletemp:
-    image: "ghcr.io/midnightrocketeducation/masters-se1-architecture/milk-services/prod-line-sys/simple-temperature-sensor:latest"
+    image: "ghcr.io/midnightrocketeducation/masters-se1-architecture/milk-services/prod-line-sys/smart-buffer-tanks/temperature-sensor:latest"
     depends_on:
       echo:
         condition: service_started

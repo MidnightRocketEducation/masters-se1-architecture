@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-	name: "simple-temperature-sensor",
+	name: "smart-buffer-tanks/temperature-sensor",
 	platforms: [
 		.macOS(.v15),
 	],

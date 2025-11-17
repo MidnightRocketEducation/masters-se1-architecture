@@ -1,7 +1,7 @@
 //
 //
 //  Temperature.swift
-//  simple-temperature-sensor
+//  smart-buffer-tanks/temperature-sensor
 //
 //  Created by MidnightRocket on 15/11/2025.
 //  
