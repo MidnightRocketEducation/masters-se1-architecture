@@ -11,7 +11,7 @@ kafka-topics.sh --bootstrap-server kafka:9092 --list
 
 #### Watch messages from a topic
 ```zsh
-kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic <topic-name> --from-beginning
+¨¨
 ```
 
 #### Send messages to a topic
