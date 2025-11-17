@@ -1,0 +1,318 @@
+###################
+# ConfigMap
+###################
+
+# This ConfigMap defines the data source configuration for Grafana.
+# It sets up Prometheus as the default data source, allowing Grafana to query metrics
+# from the Prometheus service running at http://prometheus:9090. This enables dashboard panels
+# in Grafana to visualize metrics collected by Prometheus.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: grafana-datasources
+    namespace: bd-bd-stud-olmoe22
+data:
+    prometheus.yaml: |
+        apiVersion: 1
+        datasources:
+        - name: Prometheus
+          type: prometheus
+          access: proxy
+          url: http://prometheus:9090
+          isDefault: true
+          editable: true
+---
+
+# This ConfigMap provides Grafana with dashboard provider configuration.
+# It tells Grafana to automatically discover and manage dashboards from files
+# located in /var/lib/grafana/dashboards, enabling automated dashboard provisioning.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: grafana-dashboard-providers
+    namespace: bd-bd-stud-olmoe22
+data:
+    providers.yaml: |
+        apiVersion: 1
+        providers:
+        - name: 'default'
+          orgId: 1
+          folder: ''
+          type: file
+          disableDeletion: false
+          updateIntervalSeconds: 10
+          allowUiUpdates: true
+          options:
+            path: /var/lib/grafana/dashboards
+---
+
+# This ConfigMap provides a pre-defined dashboard for Grafana.
+# It contains a JSON dashboard named "Kubernetes Pods Monitoring" that visualizes metrics from Prometheus,
+# such as HTTP request rates per pod. When mounted, Grafana automatically loads this dashboard,
+# allowing users to monitor Kubernetes pod activity and performance out-of-the-box.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: grafana-dashboards
+    namespace: bd-bd-stud-olmoe22
+data:
+    kubernetes-pods.json: |
+        {
+          "annotations": {
+            "list": [
+              {
+                "builtIn": 1,
+                "datasource": "-- Grafana --",
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+              }
+            ]
+          },
+          "editable": true,
+          "gnetId": null,
+          "graphTooltip": 0,
+          "id": null,
+          "links": [],
+          "panels": [
+            {
+              "datasource": "Prometheus",
+              "description": "",
+              "fieldConfig": {
+                "defaults": {
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisLabel": "",
+                    "axisPlacement": "auto",
+                    "barAlignment": 0,
+                    "drawStyle": "line",
+                    "fillOpacity": 0,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "lineInterpolation": "linear",
+                    "lineWidth": 1,
+                    "pointSize": 5,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  },
+                  "mappings": [],
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "color": "green",
+                        "value": null
+                      },
+                      {
+                        "color": "red",
+                        "value": 80
+                      }
+                    ]
+                  },
+                  "unit": "reqps"
+                },
+                "overrides": []
+              },
+              "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 0
+              },
+              "id": 2,
+              "options": {
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "bottom"
+                },
+                "tooltip": {
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "targets": [
+                {
+                  "datasource": "Prometheus",
+                  "editorMode": "builder",
+                  "expr": "rate(http_requests_total[5m])",
+                  "legendFormat": "{{pod}}",
+                  "range": true,
+                  "refId": "A"
+                }
+              ],
+              "title": "HTTP Requests Rate",
+              "type": "timeseries"
+            }
+          ],
+          "refresh": "5s",
+          "schemaVersion": 35,
+          "style": "dark",
+          "tags": [],
+          "templating": {
+            "list": []
+          },
+          "time": {
+            "from": "now-1h",
+            "to": "now"
+          },
+          "timepicker": {},
+          "timezone": "",
+          "title": "Kubernetes Pods Monitoring",
+          "version": 1,
+          "weekStart": ""
+        }
+---
+
+
+###################
+# Persistent Volume Claim
+###################
+
+# This PersistentVolumeClaim reserves 5Gi of storage for Grafana in the bd-bd-stud-olmoe22 namespace.
+# It allows the Grafana pod to store data such as dashboards, plugins, and configuration persistently,
+# ensuring data is retained across pod restarts or upgrades.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: grafana-pvc
+    namespace: bd-bd-stud-olmoe22
+spec:
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 5Gi
+---
+
+
+###################
+# Service
+###################
+
+# This Service exposes the Grafana application within the Kubernetes cluster on port 3000.
+# It uses the ClusterIP type, making Grafana accessible to other services in the cluster,
+# and routes traffic to pods labeled 'app: grafana' on TCP port 3000.
+apiVersion: v1
+kind: Service
+metadata:
+    name: grafana
+    namespace: bd-bd-stud-olmoe22
+    labels:
+        app: grafana
+spec:
+    type: ClusterIP
+    ports:
+        - port: 3000
+          targetPort: 3000
+          protocol: TCP
+          name: http
+    selector:
+        app: grafana
+---
+
+
+###################
+# Deployment
+###################
+
+# This Deployment manages the Grafana application in the bd-bd-stud-olmoe22 namespace.
+# It runs a single replica of Grafana using the official image, sets resource limits, and mounts
+# persistent storage and configuration from ConfigMaps. Environment variables configure admin credentials,
+# plugin installation, and user sign-up settings. Health probes ensure Grafana is running and ready.
+# The deployment provisions dashboards and data sources automatically, providing a ready-to-use monitoring solution.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: grafana
+    namespace: bd-bd-stud-olmoe22
+    labels:
+        app: grafana
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: grafana
+    template:
+        metadata:
+            labels:
+                app: grafana
+        spec:
+            securityContext:
+                runAsUser: 1000
+                runAsGroup: 1000
+                fsGroup: 1000
+            containers:
+                - name: grafana
+                  image: grafana/grafana:9.5.3
+                  ports:
+                      - containerPort: 3000
+                        name: http
+                  env:
+                      - name: GF_SECURITY_ADMIN_USER
+                        value: "admin"
+                      - name: GF_SECURITY_ADMIN_PASSWORD
+                        value: "admin"
+                      - name: GF_USERS_ALLOW_SIGN_UP
+                        value: "false"
+                      - name: GF_INSTALL_PLUGINS
+                        value: "grafana-clock-panel,grafana-simple-json-datasource"
+                  resources:
+                      requests:
+                          memory: "256Mi"
+                          cpu: "100m"
+                      limits:
+                          memory: "512Mi"
+                          cpu: "500m"
+                  volumeMounts:
+                      - name: grafana-storage
+                        mountPath: /var/lib/grafana
+                      - name: grafana-datasources
+                        mountPath: /etc/grafana/provisioning/datasources
+                      - name: grafana-dashboard-providers
+                        mountPath: /etc/grafana/provisioning/dashboards
+                      - name: grafana-dashboards
+                        mountPath: /var/lib/grafana/dashboards
+                  readinessProbe:
+                      httpGet:
+                          path: /api/health
+                          port: 3000
+                      initialDelaySeconds: 30
+                      timeoutSeconds: 10
+                  livenessProbe:
+                      httpGet:
+                          path: /api/health
+                          port: 3000
+                      initialDelaySeconds: 30
+                      timeoutSeconds: 10
+            volumes:
+                - name: grafana-storage
+                  persistentVolumeClaim:
+                      claimName: grafana-pvc
+                - name: grafana-datasources
+                  configMap:
+                      name: grafana-datasources
+                - name: grafana-dashboard-providers
+                  configMap:
+                      name: grafana-dashboard-providers
+                - name: grafana-dashboards
+                  configMap:
+                      name: grafana-dashboards

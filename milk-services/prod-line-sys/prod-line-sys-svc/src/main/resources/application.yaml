@@ -1,0 +1,9 @@
+spring.application:
+  name: ${SPRING_APPLICATION_NAME:prod-line-sys-svc}
+kafka:
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  replication-factor: ${KAFKA_REPLICATION_FACTOR:1}
+  partitions: ${KAFKA_PARTITIONS:3}
+  topic:
+    smart-buffer-tanks: ${KAFKA_TOPIC_SMART_BUFFER_TANKS}
+    vision-control: ${KAFKA_TOPIC_VISION_CONTROL}
