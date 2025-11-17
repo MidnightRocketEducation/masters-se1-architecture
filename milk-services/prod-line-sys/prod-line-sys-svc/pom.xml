@@ -33,6 +33,9 @@
 
         <spring-boot-web.version>3.5.7</spring-boot-web.version>
         <spring-kafka.version>4.0.0-RC1</spring-kafka.version>
+
+        <spring-boot-starter-actuator.version>3.5.7</spring-boot-starter-actuator.version>
+        <micrometer-registry-prometheus.version>1.16.0</micrometer-registry-prometheus.version>
     </properties>
 
     <dependencies>
@@ -53,6 +56,19 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
             <version>${spring-kafka.version}</version>
+        </dependency>
+
+
+        <!-- Monitoring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>${spring-boot-starter-actuator.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${micrometer-registry-prometheus.version}</version>
         </dependency>
     </dependencies>
 

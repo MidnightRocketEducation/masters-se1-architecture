@@ -7,3 +7,31 @@ kafka:
   topic:
     smart-buffer-tanks: ${KAFKA_TOPIC_SMART_BUFFER_TANKS}
     vision-control: ${KAFKA_TOPIC_VISION_CONTROL}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,metrics,health
+  endpoint:
+    prometheus:
+      enabled: true
+    metrics:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: prod-line-sys-svc
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.95, 0.99
+    enable:
+      jvm: true
+      http: true
+      process: true
+      system: true
+      logback: true
+      kafka: true

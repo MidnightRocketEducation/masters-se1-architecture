@@ -22,7 +22,6 @@ data:
           isDefault: true
           editable: true
 ---
-
 # This ConfigMap provides Grafana with dashboard provider configuration.
 # It tells Grafana to automatically discover and manage dashboards from files
 # located in /var/lib/grafana/dashboards, enabling automated dashboard provisioning.
@@ -45,144 +44,6 @@ data:
           options:
             path: /var/lib/grafana/dashboards
 ---
-
-# This ConfigMap provides a pre-defined dashboard for Grafana.
-# It contains a JSON dashboard named "Kubernetes Pods Monitoring" that visualizes metrics from Prometheus,
-# such as HTTP request rates per pod. When mounted, Grafana automatically loads this dashboard,
-# allowing users to monitor Kubernetes pod activity and performance out-of-the-box.
-apiVersion: v1
-kind: ConfigMap
-metadata:
-    name: grafana-dashboards
-    namespace: bd-bd-stud-olmoe22
-data:
-    kubernetes-pods.json: |
-        {
-          "annotations": {
-            "list": [
-              {
-                "builtIn": 1,
-                "datasource": "-- Grafana --",
-                "enable": true,
-                "hide": true,
-                "iconColor": "rgba(0, 211, 255, 1)",
-                "name": "Annotations & Alerts",
-                "type": "dashboard"
-              }
-            ]
-          },
-          "editable": true,
-          "gnetId": null,
-          "graphTooltip": 0,
-          "id": null,
-          "links": [],
-          "panels": [
-            {
-              "datasource": "Prometheus",
-              "description": "",
-              "fieldConfig": {
-                "defaults": {
-                  "color": {
-                    "mode": "palette-classic"
-                  },
-                  "custom": {
-                    "axisLabel": "",
-                    "axisPlacement": "auto",
-                    "barAlignment": 0,
-                    "drawStyle": "line",
-                    "fillOpacity": 0,
-                    "gradientMode": "none",
-                    "hideFrom": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": false
-                    },
-                    "lineInterpolation": "linear",
-                    "lineWidth": 1,
-                    "pointSize": 5,
-                    "scaleDistribution": {
-                      "type": "linear"
-                    },
-                    "showPoints": "auto",
-                    "spanNulls": false,
-                    "stacking": {
-                      "group": "A",
-                      "mode": "none"
-                    },
-                    "thresholdsStyle": {
-                      "mode": "off"
-                    }
-                  },
-                  "mappings": [],
-                  "thresholds": {
-                    "mode": "absolute",
-                    "steps": [
-                      {
-                        "color": "green",
-                        "value": null
-                      },
-                      {
-                        "color": "red",
-                        "value": 80
-                      }
-                    ]
-                  },
-                  "unit": "reqps"
-                },
-                "overrides": []
-              },
-              "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 0,
-                "y": 0
-              },
-              "id": 2,
-              "options": {
-                "legend": {
-                  "calcs": [],
-                  "displayMode": "list",
-                  "placement": "bottom"
-                },
-                "tooltip": {
-                  "mode": "single",
-                  "sort": "none"
-                }
-              },
-              "targets": [
-                {
-                  "datasource": "Prometheus",
-                  "editorMode": "builder",
-                  "expr": "rate(http_requests_total[5m])",
-                  "legendFormat": "{{pod}}",
-                  "range": true,
-                  "refId": "A"
-                }
-              ],
-              "title": "HTTP Requests Rate",
-              "type": "timeseries"
-            }
-          ],
-          "refresh": "5s",
-          "schemaVersion": 35,
-          "style": "dark",
-          "tags": [],
-          "templating": {
-            "list": []
-          },
-          "time": {
-            "from": "now-1h",
-            "to": "now"
-          },
-          "timepicker": {},
-          "timezone": "",
-          "title": "Kubernetes Pods Monitoring",
-          "version": 1,
-          "weekStart": ""
-        }
----
-
-
 ###################
 # Persistent Volume Claim
 ###################
@@ -202,8 +63,6 @@ spec:
         requests:
             storage: 5Gi
 ---
-
-
 ###################
 # Service
 ###################
@@ -228,8 +87,6 @@ spec:
     selector:
         app: grafana
 ---
-
-
 ###################
 # Deployment
 ###################

@@ -1,0 +1,131 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: grafana-dashboards
+    namespace: bd-bd-stud-olmoe22
+data:
+    spring-boot-service.json: |-
+        {
+          "title": "Production Line System Service Monitoring",
+          "description": "Monitor HTTP requests and performance for prod-line-sys-svc",
+          "tags": ["spring-boot", "http"],
+          "style": "dark",
+          "timezone": "browser",
+          "editable": true,
+          "panels": [
+            {
+              "id": 1,
+              "title": "HTTP Requests per Second",
+              "type": "timeseries",
+              "gridPos": {"h": 12, "w": 24, "x": 0, "y": 0},
+              "targets": [
+                {
+                  "expr": "rate(http_server_requests_seconds_count{application='prod-line-sys-svc'}[20s])",
+                  "legendFormat": "{{method}} {{status}} {{uri}}",
+                  "refId": "A"
+                }
+              ],
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "reqps",
+                  "min": 0
+                }
+              }
+            },
+            {
+              "id": 2,
+              "title": "Average Response Time",
+              "type": "timeseries",
+              "gridPos": {"h": 12, "w": 24, "x": 0, "y": 12},
+              "targets": [
+                {
+                  "expr": "rate(http_server_requests_seconds_sum{application='prod-line-sys-svc'}[20s]) / rate(http_server_requests_seconds_count{application='prod-line-sys-svc'}[20s])",
+                  "legendFormat": "Avg Response Time",
+                  "refId": "A"
+                }
+              ],
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "s",
+                  "min": 0
+                }
+              }
+            },
+            {
+              "id": 3,
+              "title": "CPU Usage (Current)",
+              "type": "stat",
+              "gridPos": {"h": 4, "w": 12, "x": 0, "y": 24},
+              "targets": [
+                {
+                  "expr": "rate(process_cpu_usage{application='prod-line-sys-svc'}[20s]) * 100",
+                  "refId": "A"
+                }
+              ],
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "percent",
+                  "min": 0,
+                  "max": 100
+                }
+              }
+            },
+            {
+              "id": 4,
+              "title": "Memory Usage (Current)",
+              "type": "stat",
+              "gridPos": {"h": 4, "w": 12, "x": 12, "y": 24},
+              "targets": [
+                {
+                  "expr": "jvm_memory_used_bytes{application='prod-line-sys-svc', area='heap'}",
+                  "refId": "A"
+                }
+              ],
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "bytes",
+                  "min": 0
+                }
+              }
+            },
+            {
+              "id": 5,
+              "title": "CPU Usage Over Time",
+              "type": "timeseries",
+              "gridPos": {"h": 12, "w": 24, "x": 0, "y": 28},
+              "targets": [
+                {
+                  "expr": "rate(process_cpu_usage{application='prod-line-sys-svc'}[20s]) * 100",
+                  "refId": "A"
+                }
+              ],
+              "fieldConfig": {
+                "defaults": {
+                  "unit": "percent",
+                  "min": 0,
+                  "max": 100
+                }
+              }
+            },
+            {
+              "id": 6,
+              "title": "Memory Usage Over Time",
+              "type": "timeseries",
+              "gridPos": {"h": 12, "w": 24, "x": 0, "y": 40},
+              "targets": [
+                {
+                  "expr": "jvm_memory_used_bytes{application='prod-line-sys-svc', area='heap'}",
+                  "legendFormat": "Heap Used",
+                  "refId": "A"
+                },
+                {
+                  "expr": "jvm_memory_max_bytes{application='prod-line-sys-svc', area='heap'}", 
+                  "legendFormat": "Heap Max",
+                  "refId": "B"
+                }
+              ]
+            }
+          ],
+          "time": {"from": "now-6h", "to": "now"},
+          "refresh": "5s"
+        }

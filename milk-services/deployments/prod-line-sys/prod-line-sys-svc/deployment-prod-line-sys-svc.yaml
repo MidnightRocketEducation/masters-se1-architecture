@@ -11,6 +11,10 @@ spec:
     metadata:
       labels:
         app: prod-line-sys-svc
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/actuator/prometheus"
     spec:
       containers:
       - name: prod-line-sys-svc
