@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k6-client
+  namespace: bd-bd-stud-olmoe22
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k6-client
+  template:
+    metadata:
+      labels:
+        app: k6-client
+    spec:
+      containers:
+      - name: k6-client
+        image: grafana/k6:1.4.0
+        command: ["sleep", "infinity"]
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "8Gi"
+            cpu: "4000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k6-client
+  namespace: bd-bd-stud-olmoe22
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6565
+    targetPort: 6565
+  selector:
+    app: k6-client
