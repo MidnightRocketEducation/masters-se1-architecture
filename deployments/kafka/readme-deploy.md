@@ -1,3 +1,25 @@
+### Interactive Kafka pod
+```zsh
+kubectl run kafka-client -it --rm --restart='Never' --image docker.io/bitnami/kafka:3.8.0-debian-12-r3  -- bash
+```
+
+### Kafka topics
+#### Query existing topics
+```zsh
+kafka-topics.sh --bootstrap-server kafka:9092 --list
+```
+
+#### Watch messages from a topic
+```zsh
+¨¨
+```
+
+#### Send messages to a topic
+```zsh
+kafka-console-producer.sh --bootstrap-server kafka:9092 --topic <topic-name>
+```
+
+
 # Kafka Message Broker
 
 This component provides Apache Kafka for real-time messaging in the Big Data application.
@@ -15,10 +37,10 @@ This component provides Apache Kafka for real-time messaging in the Big Data app
 ## Deployment
 
 ```bash
-kubectl apply -f k8s/zookeeper-deployment.yaml
-kubectl apply -f k8s/zookeeper-service.yaml
-kubectl apply -f k8s/kafka-deployment.yaml
-kubectl apply -f k8s/kafka-service.yaml
+kubectl apply -f zookeeper-deployment.yaml
+kubectl apply -f zookeeper-service.yaml
+kubectl apply -f kafka-deployment.yaml
+kubectl apply -f kafka-service.yaml
 ```
 
 ## Topics
