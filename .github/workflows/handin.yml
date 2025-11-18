@@ -2,6 +2,7 @@ name: Handin workflow
 
   # Workflow triggers
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
