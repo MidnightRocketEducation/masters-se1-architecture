@@ -111,3 +111,17 @@ for i in $(seq 1 300000); do
   if (( $i % 500 == 0 )); then sleep 1; fi
 done
 ```
+
+### Metrics Server
+
+#### Download the Metrics Server components.yaml file
+
+```zsh
+curl -LO https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```
+
+#### Apply the Metrics Server components.yaml file
+
+```zsh
+kubectl apply -f ./deployments/monitoring/metrics-server-deployment.yaml
+```
