@@ -26,6 +26,27 @@ kubectl apply -f ./deployments/experiment/k6-stress-test-deployment.yaml
 kubectl apply -f ./deployments/experiment/k6-test-configmap.yaml
 ```
 
+#### Adjust user amount in k6-job.yaml if needed
+
+```js
+scenarios: {
+        stress: {
+          executor: 'ramping-vus',
+          stages: [
+            { duration: '1m', target: 1000 }, // ramp-up to x users
+            { duration: '2m', target: 1000 }, // keep at x users
+            { duration: '2m', target: 5000 }, // ramp-up to y users
+            { duration: '5m', target: 5000 }, // keep at y users
+            { duration: '1m', target: 0 }, // ramp-down to 0 users
+          ],
+        },
+      },
+
+...
+
+sleep(0.5); // 2 requests per second per VU
+```
+
 ### 2. Deploy kubernets job to run k6 test
 
 ```zsh
