@@ -1,25 +1,25 @@
 ### 1. Deploy Prometheus
 
 ```zsh
-kubectl apply -f ./milk-services/deployments/monitoring/deployment-prometheus.yaml
+kubectl apply -f ./deployments/monitoring/deployment-prometheus.yaml
 ```
 
 ### 2. Deploy Node Exporter
 
 ```zsh
-kubectl apply -f ./milk-services/deployments/monitoring/deployment-node-exporter.yaml
+kubectl apply -f ./deployments/monitoring/deployment-node-exporter.yaml
 ```
 
 ### 3. Deploy Grafana
 
 ```zsh
-kubectl apply -f ./milk-services/deployments/monitoring/deployment-grafana.yaml
+kubectl apply -f ./deployments/monitoring/deployment-grafana.yaml
 ```
 
 #### 3.1 Deploy Grafana Dashboards
 
 ```zsh
-kubectl apply -f ./milk-services/deployments/monitoring/configmap-grafana-dashboards.yaml
+kubectl apply -f ./deployments/monitoring/configmap-grafana-dashboards.yaml
 ```
 
 #### 3.2 Port Forwarding Grafana
@@ -31,7 +31,7 @@ kubectl port-forward -n bd-bd-stud-olmoe22 deployment/grafana 3000:3000
 ### 4. Deploy k6
 
 ```zsh
-kubectl apply -f ./milk-services/deployments/monitoring/deployment-k6.yaml
+kubectl apply -f ./deployments/monitoring/deployment-k6.yaml
 ```
 
 #### A4.1 Shell into k6 pod
