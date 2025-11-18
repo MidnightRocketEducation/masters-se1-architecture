@@ -1,11 +1,10 @@
-name: CI/CD Workflow - prod-line-sys-svc
+name: CI/CD prod-line-sys-svc
 
 # Workflow triggers
 on:
     push:
         branches:
             - main
-            - master
             - svc/prod-line-sys-svc
             - svc/monitoring
         paths:
@@ -13,7 +12,6 @@ on:
     pull_request:
         branches:
             - main
-            - master
             - svc/prod-line-sys-svc
             - svc/monitoring
         paths:

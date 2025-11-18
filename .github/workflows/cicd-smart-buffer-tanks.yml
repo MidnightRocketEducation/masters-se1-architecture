@@ -1,4 +1,4 @@
-name: CI/CD for Smart milktanks
+name: CI/CD smart-buffer-tanks
 
 # Trigger the workflow on pushes to the main branch (adjust as needed)
 on:
