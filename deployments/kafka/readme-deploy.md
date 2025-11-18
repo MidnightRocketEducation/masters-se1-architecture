@@ -30,13 +30,13 @@ This component provides Apache Kafka for real-time messaging in the Big Data app
 
 ### Components
 
--   **Zookeeper**: Coordination service for Kafka cluster management
--   **Kafka Broker**: Message broker for publishing and subscribing to topics
+- **Zookeeper**: Coordination service for Kafka cluster management
+- **Kafka Broker**: Message broker for publishing and subscribing to topics
 
 ### Architecture
 
--   **Zookeeper**: Runs on port 2181, provides cluster coordination
--   **Kafka Broker**: Runs on port 9092, handles message processing
+- **Zookeeper**: Runs on port 2181, provides cluster coordination
+- **Kafka Broker**: Runs on port 9092, handles message processing
 
 ### Deployment
 
@@ -67,7 +67,7 @@ kubectl exec -it kafka-<pod-id> -- kafka-topics --list --bootstrap-server localh
 
 Default settings:
 
--   Single broker setup (suitable for development)
--   PLAINTEXT protocol (no authentication)
--   Topic replication factor: 1
--   Auto-create topics: enabled
+- Single broker setup (suitable for development)
+- PLAINTEXT protocol (no authentication)
+- Topic replication factor: 1
+- Auto-create topics: enabled

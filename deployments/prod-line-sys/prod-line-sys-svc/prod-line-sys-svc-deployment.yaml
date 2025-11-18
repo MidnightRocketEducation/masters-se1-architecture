@@ -17,16 +17,16 @@ spec:
         prometheus.io/path: "/actuator/prometheus"
     spec:
       containers:
-      - name: prod-line-sys-svc
-        image: ghcr.io/midnightrocketeducation/prod-line-sys-svc:latest
-        ports:
-        - containerPort: 8080
-        env:
-        - name: KAFKA_BOOTSTRAP_SERVERS
-          value: "kafka:9092"
-        - name: KAFKA_REPLICATION_FACTOR
-          value: "1"
-        - name: KAFKA_PARTITIONS
-          value: "3"
-        - name: KAFKA_TOPIC_SMART_BUFFER_TANKS
-          value: "smart-buffer-tanks-topic"
+        - name: prod-line-sys-svc
+          image: ghcr.io/midnightrocketeducation/prod-line-sys-svc:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka:9092"
+            - name: KAFKA_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_PARTITIONS
+              value: "3"
+            - name: KAFKA_TOPIC_SMART_BUFFER_TANKS
+              value: "smart-buffer-tanks-topic"

@@ -9,18 +9,18 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: grafana-datasources
-    namespace: bd-bd-stud-olmoe22
+  name: grafana-datasources
+  namespace: bd-bd-stud-olmoe22
 data:
-    prometheus.yaml: |
-        apiVersion: 1
-        datasources:
-        - name: Prometheus
-          type: prometheus
-          access: proxy
-          url: http://prometheus:9090
-          isDefault: true
-          editable: true
+  prometheus.yaml: |
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      access: proxy
+      url: http://prometheus:9090
+      isDefault: true
+      editable: true
 ---
 # This ConfigMap provides Grafana with dashboard provider configuration.
 # It tells Grafana to automatically discover and manage dashboards from files
@@ -28,21 +28,21 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: grafana-dashboard-providers
-    namespace: bd-bd-stud-olmoe22
+  name: grafana-dashboard-providers
+  namespace: bd-bd-stud-olmoe22
 data:
-    providers.yaml: |
-        apiVersion: 1
-        providers:
-        - name: 'default'
-          orgId: 1
-          folder: ''
-          type: file
-          disableDeletion: false
-          updateIntervalSeconds: 10
-          allowUiUpdates: true
-          options:
-            path: /var/lib/grafana/dashboards
+  providers.yaml: |
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      updateIntervalSeconds: 10
+      allowUiUpdates: true
+      options:
+        path: /var/lib/grafana/dashboards
 ---
 ###################
 # Persistent Volume Claim
@@ -54,14 +54,14 @@ data:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-    name: grafana-pvc
-    namespace: bd-bd-stud-olmoe22
+  name: grafana-pvc
+  namespace: bd-bd-stud-olmoe22
 spec:
-    accessModes:
-        - ReadWriteOnce
-    resources:
-        requests:
-            storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
 ---
 ###################
 # Service
@@ -73,19 +73,19 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-    name: grafana
-    namespace: bd-bd-stud-olmoe22
-    labels:
-        app: grafana
+  name: grafana
+  namespace: bd-bd-stud-olmoe22
+  labels:
+    app: grafana
 spec:
-    type: ClusterIP
-    ports:
-        - port: 3000
-          targetPort: 3000
-          protocol: TCP
-          name: http
-    selector:
-        app: grafana
+  type: ClusterIP
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+      name: http
+  selector:
+    app: grafana
 ---
 ###################
 # Deployment
@@ -99,77 +99,77 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: grafana
-    namespace: bd-bd-stud-olmoe22
-    labels:
-        app: grafana
+  name: grafana
+  namespace: bd-bd-stud-olmoe22
+  labels:
+    app: grafana
 spec:
-    replicas: 1
-    selector:
-        matchLabels:
-            app: grafana
-    template:
-        metadata:
-            labels:
-                app: grafana
-        spec:
-            securityContext:
-                runAsUser: 1000
-                runAsGroup: 1000
-                fsGroup: 1000
-            containers:
-                - name: grafana
-                  image: grafana/grafana:9.5.3
-                  ports:
-                      - containerPort: 3000
-                        name: http
-                  env:
-                      - name: GF_SECURITY_ADMIN_USER
-                        value: "admin"
-                      - name: GF_SECURITY_ADMIN_PASSWORD
-                        value: "admin"
-                      - name: GF_USERS_ALLOW_SIGN_UP
-                        value: "false"
-                      - name: GF_INSTALL_PLUGINS
-                        value: "grafana-clock-panel,grafana-simple-json-datasource"
-                  resources:
-                      requests:
-                          memory: "256Mi"
-                          cpu: "100m"
-                      limits:
-                          memory: "512Mi"
-                          cpu: "500m"
-                  volumeMounts:
-                      - name: grafana-storage
-                        mountPath: /var/lib/grafana
-                      - name: grafana-datasources
-                        mountPath: /etc/grafana/provisioning/datasources
-                      - name: grafana-dashboard-providers
-                        mountPath: /etc/grafana/provisioning/dashboards
-                      - name: grafana-dashboards
-                        mountPath: /var/lib/grafana/dashboards
-                  readinessProbe:
-                      httpGet:
-                          path: /api/health
-                          port: 3000
-                      initialDelaySeconds: 30
-                      timeoutSeconds: 10
-                  livenessProbe:
-                      httpGet:
-                          path: /api/health
-                          port: 3000
-                      initialDelaySeconds: 30
-                      timeoutSeconds: 10
-            volumes:
-                - name: grafana-storage
-                  persistentVolumeClaim:
-                      claimName: grafana-pvc
-                - name: grafana-datasources
-                  configMap:
-                      name: grafana-datasources
-                - name: grafana-dashboard-providers
-                  configMap:
-                      name: grafana-dashboard-providers
-                - name: grafana-dashboards
-                  configMap:
-                      name: grafana-dashboards
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: grafana
+          image: grafana/grafana:9.5.3
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: "admin"
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: "admin"
+            - name: GF_USERS_ALLOW_SIGN_UP
+              value: "false"
+            - name: GF_INSTALL_PLUGINS
+              value: "grafana-clock-panel,grafana-simple-json-datasource"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
+            - name: grafana-datasources
+              mountPath: /etc/grafana/provisioning/datasources
+            - name: grafana-dashboard-providers
+              mountPath: /etc/grafana/provisioning/dashboards
+            - name: grafana-dashboards
+              mountPath: /var/lib/grafana/dashboards
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+      volumes:
+        - name: grafana-storage
+          persistentVolumeClaim:
+            claimName: grafana-pvc
+        - name: grafana-datasources
+          configMap:
+            name: grafana-datasources
+        - name: grafana-dashboard-providers
+          configMap:
+            name: grafana-dashboard-providers
+        - name: grafana-dashboards
+          configMap:
+            name: grafana-dashboards
