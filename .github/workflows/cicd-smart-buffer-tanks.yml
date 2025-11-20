@@ -2,12 +2,15 @@ name: CI/CD smart-buffer-tanks
 
 # Trigger the workflow on pushes to the main branch (adjust as needed)
 on:
+  workflow_dispatch:
   push:
     paths:
-      - milk-services/prod-line-sys/smart-buffer-tanks/temperature-sensor
+      - "milk-services/prod-line-sys/smart-buffer-tanks/temperature-sensor/**"
     branches:
       - main
   pull_request:
+    paths:
+      - "milk-services/prod-line-sys/smart-buffer-tanks/temperature-sensor/**"
     branches:
       - main
 
