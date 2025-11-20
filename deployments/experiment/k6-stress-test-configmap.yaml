@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k6-stress-test-script
+  namespace: bd-bd-stud-olmoe22
+data:
+  test.js: |
+    import http from 'k6/http';
+    import { check, sleep } from 'k6';
+
+    export const options = {
+      scenarios: {
+        stress: {
+          executor: 'ramping-vus',
+          stages: [
+            { duration: '1m', target: 1000 }, // ramp-up to x users
+            { duration: '2m', target: 1000 }, // keep at x users
+            { duration: '2m', target: 5000 }, // ramp-up to y users
+            { duration: '5m', target: 5000 }, // keep at y users
+            { duration: '1m', target: 0 }, // ramp-down to 0 users
+          ],
+        },
+      },
+      thresholds: {
+        http_req_duration: ['p(95)<5000'], // 95% of requests should be below 5s (5000ms)
+        http_req_failed: ['rate<0.05'], // error rate should be less than 5%
+      },
+      noConnectionReuse: true,
+    };
+
+    const payloads = Array.from({ length: 50 }, (_, i) => 
+      JSON.stringify({
+        temperature: (Math.random() * 10).toFixed(2),
+        timestamp: new Date(Date.now() - i * 1000).toISOString()
+      })
+    );
+
+    export default function() {
+      const url = 'http://prod-line-sys-svc:8080/api/v1/smart-buffer-tanks/temperature-measurement';
+      const randomPayload = payloads[Math.floor(Math.random() * payloads.length)];
+      
+      const params = {
+        headers: { 
+          'Content-Type': 'application/json',
+          'Connection': 'close'
+        },
+        timeout: '30s',
+      };
+      
+      const res = http.post(url, randomPayload, params);
+      
+      check(res, {
+        'status is 200': (r) => r.status === 200,
+        'response time OK': (r) => r.timings.duration < 15000,
+      });
+      
+      sleep(0.5); // 2 requests per second per VU
+    }

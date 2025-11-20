@@ -1,4 +1,4 @@
-name: CI/CD for Smart milktanks
+name: CI/CD smart-buffer-tanks
 
 # Trigger the workflow on pushes to the main branch (adjust as needed)
 on:
@@ -29,8 +29,8 @@ jobs:
 
     # Required permissions: push to packages
     permissions:
-      contents: read        # for actions/checkout
-      packages: write       # to push to ghcr.io
+      contents: read # for actions/checkout
+      packages: write # to push to ghcr.io
 
     steps:
       # 1️⃣ Checkout the repository
@@ -54,8 +54,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}          # usually your GitHub username
-          password: ${{ secrets.GITHUB_TOKEN }}  # the token is automatically available
+          username: ${{ github.actor }} # usually your GitHub username
+          password: ${{ secrets.GITHUB_TOKEN }} # the token is automatically available
 
       # See https://github.com/orgs/community/discussions/25768
       - name: Convert tags to lowercase

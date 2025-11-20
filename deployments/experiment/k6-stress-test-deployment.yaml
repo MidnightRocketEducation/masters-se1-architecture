@@ -1,0 +1,18 @@
+apiVersion: k6.io/v1alpha1
+kind: K6
+metadata:
+  name: k6-stress-test-prod-line-sys-svc
+spec:
+  parallelism: 2
+  script:
+    configMap:
+      name: k6-stress-test-script
+      file: test.js
+  runner:
+    resources:
+      requests:
+        memory: "2Gi"
+        cpu: "1000m"
+      limits:
+        memory: "4Gi"
+        cpu: "2000m"

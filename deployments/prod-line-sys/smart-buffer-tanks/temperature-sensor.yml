@@ -15,11 +15,11 @@ spec:
         app: temperature-sensor
     spec:
       containers:
-      - name: temperature-sensor
-        image: ghcr.io/midnightrocketeducation/masters-se1-architecture/milk-services/prod-line-sys/smart-buffer-tanks/temperature-sensor:latest
-        env:
-        - name: ST_PUSH_URL
-          value: "http://prod-line-sys-svc:8080/api/v1/smart-buffer-tanks/temperature-measurement"
-        - name: ST_INTERVAL
-          value: "10"
+        - name: temperature-sensor
+          image: ghcr.io/midnightrocketeducation/masters-se1-architecture/milk-services/prod-line-sys/smart-buffer-tanks/temperature-sensor:latest
+          env:
+            - name: ST_PUSH_URL
+              value: "http://prod-line-sys-svc:8080/api/v1/smart-buffer-tanks/temperature-measurement"
+            - name: ST_INTERVAL
+              value: "10"
       restartPolicy: Always

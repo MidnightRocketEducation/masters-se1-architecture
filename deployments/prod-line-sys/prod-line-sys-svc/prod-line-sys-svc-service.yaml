@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: prod-line-sys-svc
 spec:
+  type: ClusterIP
   selector:
     app: prod-line-sys-svc
   ports:

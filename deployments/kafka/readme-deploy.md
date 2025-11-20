@@ -1,40 +1,44 @@
-### Interactive Kafka pod
+## Interactive Kafka pod
+
 ```zsh
 kubectl run kafka-client -it --rm --restart='Never' --image docker.io/bitnami/kafka:3.8.0-debian-12-r3  -- bash
 ```
 
-### Kafka topics
-#### Query existing topics
+## Kafka topics
+
+### Query existing topics
+
 ```zsh
 kafka-topics.sh --bootstrap-server kafka:9092 --list
 ```
 
-#### Watch messages from a topic
+### Watch messages from a topic
+
 ```zsh
-¨¨
+kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic <topic-name> --from-beginning
 ```
 
-#### Send messages to a topic
+### Send messages to a topic
+
 ```zsh
 kafka-console-producer.sh --bootstrap-server kafka:9092 --topic <topic-name>
 ```
 
-
-# Kafka Message Broker
+## Kafka Message Broker Deployment
 
 This component provides Apache Kafka for real-time messaging in the Big Data application.
 
-## Components
+### Components
 
 - **Zookeeper**: Coordination service for Kafka cluster management
 - **Kafka Broker**: Message broker for publishing and subscribing to topics
 
-## Architecture
+### Architecture
 
 - **Zookeeper**: Runs on port 2181, provides cluster coordination
 - **Kafka Broker**: Runs on port 9092, handles message processing
 
-## Deployment
+### Deployment
 
 ```bash
 kubectl apply -f zookeeper-deployment.yaml
@@ -43,13 +47,7 @@ kubectl apply -f kafka-deployment.yaml
 kubectl apply -f kafka-service.yaml
 ```
 
-## Topics
-
-The following topics are used by the Spark Streaming application:
-- `prediction-requests`: Input topic for prediction requests (Avro format)
-- `prediction-responses`: Output topic for prediction responses (Avro format)
-
-## Testing
+### Testing
 
 Create topics manually:
 
@@ -65,9 +63,10 @@ kubectl exec -it kafka-<pod-id> -- kafka-topics --create --topic prediction-resp
 kubectl exec -it kafka-<pod-id> -- kafka-topics --list --bootstrap-server localhost:9092
 ```
 
-## Configuration
+### Configuration
 
 Default settings:
+
 - Single broker setup (suitable for development)
 - PLAINTEXT protocol (no authentication)
 - Topic replication factor: 1
