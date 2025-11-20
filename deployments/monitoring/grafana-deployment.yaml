@@ -64,30 +64,6 @@ spec:
       storage: 5Gi
 ---
 ###################
-# Service
-###################
-
-# This Service exposes the Grafana application within the Kubernetes cluster on port 3000.
-# It uses the ClusterIP type, making Grafana accessible to other services in the cluster,
-# and routes traffic to pods labeled 'app: grafana' on TCP port 3000.
-apiVersion: v1
-kind: Service
-metadata:
-  name: grafana
-  namespace: bd-bd-stud-olmoe22
-  labels:
-    app: grafana
-spec:
-  type: ClusterIP
-  ports:
-    - port: 3000
-      targetPort: 3000
-      protocol: TCP
-      name: http
-  selector:
-    app: grafana
----
-###################
 # Deployment
 ###################
 
