@@ -1,29 +1,37 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: k6-stress-test
+  name: k6-performance-test
   namespace: bd-bd-stud-olmoe22
 spec:
-  completions: 4
-  parallelism: 4
+  completions: 1
+  parallelism: 1
+  backoffLimit: 0
   template:
     spec:
       containers:
         - name: k6
           image: grafana/k6:latest
-          command: ["k6", "run", "/test/test.js"]
+          command:
+            - "sh"
+            - "-c"
+            - "k6 run --out json=test_results.json --summary-export=summary.json /test/test.js && echo '=== PER-STAGE RESULTS ===' && cat summary.json"
           volumeMounts:
             - name: k6-script
               mountPath: /test
+            - name: output-volume
+              mountPath: /output
           resources:
             requests:
-              memory: "2Gi"
-              cpu: "1000m"
-            limits:
               memory: "4Gi"
-              cpu: "2000m"
+              cpu: "4000m"
+            limits:
+              memory: "24Gi"
+              cpu: "10000m"
       volumes:
         - name: k6-script
           configMap:
             name: k6-stress-test-script
+        - name: output-volume
+          emptyDir: {}
       restartPolicy: Never

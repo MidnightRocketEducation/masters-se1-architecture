@@ -1,3 +1,15 @@
+# Instructions
+- Here is the uppaal file [uppaal.xml](./uppaal.xml)
+- The k8s deployment files are in the [deployments](./deployments) folder
+  - The deployments have further readme files
+  - In general, the deployment files should work out of the box
+- The code for different services is in the [milk-services](./milk-services) folder
+  - relevant for the test is the Java code provided in the [prod-line-sys-svc](./milk-services/prod-line-sys/prod-line-sys-svc) folder
+- CI/CD files can be found in the [.github/workflows](./.github/workflows) folder
+- images for deployment are automatically built and pushed to GitHub Container Registry and can be pulled from `ghcr.io/midnightrocketeducation/masters-se1-architecture/<image-name>:<tag>`
+
+<br/>
+
 # Advanced Software Architecture and Analysis Portfolio Template
 
 - [Introduction](#introduction)

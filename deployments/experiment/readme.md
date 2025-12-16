@@ -1,4 +1,4 @@
-## k6 Stress test (k6 ressource, requires admin permissions)
+## Option A: k6 Stress test (k6 ressource, requires admin permissions)
 
 ### 1A. Install the k6 operator in your namespace
 
@@ -18,42 +18,27 @@ kubectl apply -f https://github.com/grafana/k6-operator/releases/latest/download
 kubectl apply -f ./deployments/experiment/k6-stress-test-deployment.yaml
 ```
 
-## k6 Stress test (k8s job, without admin permissions)
+## Option B: k6 Stress test (k8s job, without admin permissions)
 
 ### 1. Deploy configmap with k6 test script
 
 ```zsh
-kubectl apply -f ./deployments/experiment/k6-test-configmap.yaml
+kubectl apply -f ./deployments/experiment/k6-stress-test-configmap.yaml
 ```
 
-#### Adjust user amount in k6-job.yaml if needed
-
-```js
-scenarios: {
-        stress: {
-          executor: 'ramping-vus',
-          stages: [
-            { duration: '1m', target: 1000 }, // ramp-up to x users
-            { duration: '2m', target: 1000 }, // keep at x users
-            { duration: '2m', target: 5000 }, // ramp-up to y users
-            { duration: '5m', target: 5000 }, // keep at y users
-            { duration: '1m', target: 0 }, // ramp-down to 0 users
-          ],
-        },
-      },
-
-...
-
-sleep(0.5); // 2 requests per second per VU
-```
-
-### 2. Deploy kubernets job to run k6 test
+### 2. Deploy kubernetes job to run k6 test
 
 ```zsh
-kubectl apply -f ./deployments/experiment/k6-job.yaml
+kubectl apply -f ./deployments/experiment/k6-stress-test-job.yaml
 ```
 
-## k6 client for interactive load testing
+### 3. Save logs of the job pod
+
+```zsh
+kubectl logs -n bd-bd-stud-olmoe22 k6-performance-test-7lhzc > k6-results.log
+```
+
+## Option C: k6 client for interactive load testing
 
 ### 1. Deploy k6 client pod
 
