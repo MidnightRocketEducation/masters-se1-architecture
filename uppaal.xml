@@ -9,8 +9,8 @@ clock t;
 
 // Time limits for processing and sending data
 const int PROCESS_TIME_MIN = 1;     // Minimum time for internal processing
-const int PROCESS_TIME_MAX = 20;    // Maximum time for internal processing
-const int PRODUCE_TIME    = 10;     // Time to send data to Kafka
+const int PROCESS_TIME_MAX = 200;    // Maximum time for internal processing
+const int PRODUCE_TIME    = 20;     // Time to send data to Kafka
 
 // Maximum allowed waiting time for a response
 const int LATENCY_DEADLINE = 100;</declaration>
@@ -20,30 +20,54 @@ const int LATENCY_DEADLINE = 100;</declaration>
 			<name x="-273" y="-102">Idle</name>
 			<label kind="comments" x="-476" y="-127">Waiting before sending a new request</label>
 		</location>
-		<location id="id1" x="272" y="-51">
-			<name x="262" y="-85">Ready</name>
-			<label kind="comments" x="272" y="-119">Ready to send a request</label>
+		<location id="id1" x="246" y="-42">
+			<name x="236" y="-76">Ready</name>
+			<label kind="comments" x="246" y="-110">Ready to send a request</label>
 		</location>
 		<location id="id2" x="42" y="136">
 			<name x="8" y="153">Waiting</name>
-			<label kind="invariant" x="-51" y="178">t &lt;= LATENCY_DEADLINE</label>
-			<label kind="comments" x="-42" y="204">Waiting for a response from the REST service</label>
+			<label kind="comments" x="8" y="195">Waiting for a response from
+the REST service</label>
+		</location>
+		<location id="id3" x="-314" y="212">
+			<name x="-339" y="229">Failed</name>
+			<label kind="comments" x="-433" y="254">Request exeeded latency</label>
+		</location>
+		<location id="id4" x="-161" y="59">
+			<name x="-203" y="76">Success</name>
+			<label kind="invariant" x="-263" y="93">t&lt;=LATENCY_DEADLINE</label>
+			<label kind="comments" x="-119" y="0">Received a response,
+go back to waiting for
+next request</label>
 		</location>
 		<init ref="id0"/>
-		<transition id="id3">
-			<source ref="id2"/>
+		<transition id="id5">
+			<source ref="id4"/>
 			<target ref="id0"/>
-			<label kind="synchronisation" x="-153" y="34">ack?</label>
-			<label kind="comments" x="-408" y="68">Received a response,
-go back to waiting for next request</label>
+			<label kind="synchronisation" x="-221" y="-34">ack?</label>
 		</transition>
-		<transition id="id4">
+		<transition id="id6">
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-93" y="68">t&lt;=LATENCY_DEADLINE</label>
+		</transition>
+		<transition id="id7">
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-280" y="42">ack?</label>
+		</transition>
+		<transition id="id8">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-212" y="204">t &gt; LATENCY_DEADLINE</label>
+		</transition>
+		<transition id="id9">
 			<source ref="id1"/>
 			<target ref="id2"/>
 			<label kind="synchronisation" x="161" y="51">sendData!</label>
 			<label kind="comments" x="144" y="76">Send a REST request to the service</label>
 		</transition>
-		<transition id="id5">
+		<transition id="id10">
 			<source ref="id0"/>
 			<target ref="id1"/>
 			<label kind="assignment" x="0" y="-85">t=0</label>
@@ -54,40 +78,40 @@ go back to waiting for next request</label>
 		<name x="5" y="5">ProductionLineSystemService</name>
 		<declaration>
 </declaration>
-		<location id="id6" x="0" y="0">
+		<location id="id11" x="0" y="0">
 			<name x="-34" y="-42">Listening</name>
 			<label kind="comments" x="-187" y="-85">Waiting for a REST request
 from the subsystem</label>
 		</location>
-		<location id="id7" x="382" y="0">
+		<location id="id12" x="382" y="0">
 			<name x="372" y="-34">Processing</name>
 			<label kind="invariant" x="372" y="17">t &lt;= PROCESS_TIME_MAX + PRODUCE_TIME</label>
 			<label kind="comments" x="382" y="-85">Handling the received data
 and preparing a response</label>
 		</location>
-		<location id="id8" x="204" y="272">
+		<location id="id13" x="204" y="272">
 			<name x="161" y="297">Responding</name>
 			<label kind="comments" x="127" y="323">Sending a response back to
 the subsystem</label>
 		</location>
-		<init ref="id6"/>
-		<transition id="id9">
-			<source ref="id8"/>
-			<target ref="id6"/>
+		<init ref="id11"/>
+		<transition id="id14">
+			<source ref="id13"/>
+			<target ref="id11"/>
 			<label kind="synchronisation" x="59" y="136">ack!</label>
 			<label kind="comments" x="-25" y="161">Response sent,
 ready for the
 next request</label>
 		</transition>
-		<transition id="id10">
-			<source ref="id7"/>
-			<target ref="id8"/>
+		<transition id="id15">
+			<source ref="id12"/>
+			<target ref="id13"/>
 			<label kind="guard" x="298" y="144">t &lt;= PROCESS_TIME_MAX + PRODUCE_TIME</label>
 			<label kind="comments" x="348" y="110">Finished processing and sending data</label>
 		</transition>
-		<transition id="id11">
-			<source ref="id6"/>
-			<target ref="id7"/>
+		<transition id="id16">
+			<source ref="id11"/>
+			<target ref="id12"/>
 			<label kind="synchronisation" x="144" y="-42">sendData?</label>
 			<label kind="comments" x="93" y="-85">Received a REST request,
 start processing</label>
@@ -98,19 +122,19 @@ start processing</label>
 		<query>
 			<formula>A[] not deadlock</formula>
 			<comment>Check that the system never gets stuck (no deadlocks)</comment>
-			<result outcome="success" type="quality" timestamp="2025-12-10 18:40:38 +0100">
+			<result outcome="success" type="quality" timestamp="2025-12-17 11:13:01 +0100">
 			</result>
 		</query>
 		<query>
-			<formula>SubsystemWithSensor.Waiting --&gt; SubsystemWithSensor.Idle</formula>
+			<formula>SubsystemWithSensor.Success --&gt; SubsystemWithSensor.Idle</formula>
 			<comment>Every request from the subsystem will always get a response</comment>
-			<result outcome="success" type="quality" timestamp="2025-12-10 18:40:38 +0100">
+			<result outcome="success" type="quality" timestamp="2025-12-17 11:19:03 +0100">
 			</result>
 		</query>
 		<query>
-			<formula>A[] (SubsystemWithSensor.Waiting imply t &lt;= LATENCY_DEADLINE)</formula>
-			<comment>The subsystem never waits longer than 100 ms for a response</comment>
-			<result outcome="success" type="quality" timestamp="2025-12-10 18:40:38 +0100">
+			<formula>A[] (SubsystemWithSensor.Success imply t &lt;= LATENCY_DEADLINE)</formula>
+			<comment>The subsystem success state never waits longer than 100 ms for a response</comment>
+			<result outcome="success" type="quality" timestamp="2025-12-17 11:24:01 +0100">
 			</result>
 		</query>
 	</queries>
